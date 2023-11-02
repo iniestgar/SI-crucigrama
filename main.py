@@ -173,7 +173,7 @@ def creaVariables(tablero):
     for conta in range(2):
         
         for i in range(iterSup):
-            print('Itera')
+            #print('Itera')
             tam = 0
             for j in range(iterInf):
                 fila=i
@@ -181,35 +181,27 @@ def creaVariables(tablero):
                 if esCol==True: #Intercambiamos los valores para crear las variables Columna
                     fila=j
                     col=i
-                print(f'Iteración {i}: ({fila}, {col})')
-                if (tablero.getCelda(fila,col) == LLENA or j == iterInf-1) and tam > 0:
-                    if esFil==True:
-                        posFija=fila
-                        posFinal=col-1
-                        variable = Variable(tablero,posFinal,posFija,"f",tam)
-                    if esCol==True:
-                        posFija=col
-                        posFinal=fila-1
-                        variable = Variable(tablero,posFinal,posFija,"c",tam)
-                    
-                    variables.append(variable)
-                    #print(f'Variable {fila},{col}: {variable}')
-                    tam = 0
-                #Si en una fila o columna llegamos al final y resulta que solo hay un hueco
-                #se crea una nueva variable
-                elif j == iterInf-1 and tam==0 and tablero.getCelda(fila,col) != LLENA:
-                    if esFil==True:
-                        posFija=i
-                        posFinal=j-1
-                        variable = Variable(tablero,posFinal,posFija,'f',1)
-                    if esCol==True:
-                        posFija=j
-                        posFinal=i-1
-                        variable = Variable(tablero,posFinal,posFija,'c',1)
-                    variables.append(variable)
-                else:
+                #print(f'Iteración {i}: ({fila}, {col})')
+                if tablero.getCelda(fila,col) != LLENA:
                     tam+=1
-            
+                    if esFil==True:
+                        #print(f'tamaño: {tam}')
+                        posFija=fila
+                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA:
+                            posFinal=col
+                            variable = Variable(tablero,posFinal,posFija,"f",tam)
+                            variables.append(variable)
+                            tam = 0
+                        
+                    if esCol==True:
+                        #print(f'tamaño: {tam}')
+                        posFija=col
+                        if j == iterInf-1 or tablero.getCelda(fila+1,col) == LLENA:
+                            posFinal=fila
+                            variable = Variable(tablero,posFinal,posFija,"c",tam)
+                            variables.append(variable)
+                            tam = 0
+
         #Si al crear las variables filas llegamos al final 
         #activamos los flags para crear las columnas e intercambiamos las constantes
         if conta == 0:
@@ -217,7 +209,10 @@ def creaVariables(tablero):
             esFil=False
             iterSup=COLS
             iterInf=FILS
+        
     print(len(variables))
+    for i,var in enumerate(variables):
+        print(i,var.getPosicion('inicio'),var.getPosicion('final'),var)
     return variables
 
 #########################################################################

@@ -4,17 +4,14 @@ class Variable:
         self.palabra = []
         self.tam = tamPal
         self.tipo = tipo
-        self.inicio = posFinal-tamPal
+        self.inicio = posFinal-tamPal+1
         self.FILA = 0
         self.COL = 0
         
         if tipo == 'f':
             self.FILA = posConst
             for i in range(self.inicio,posFinal+1):
-                if tablero.getCelda(self.FILA,i) == '-':
-                    self.palabra.append(' ')
-                else:
-                    self.palabra.append(tablero.getCelda(self.FILA,i))
+                self.palabra.append(tablero.getCelda(self.FILA,i))
         elif tipo == 'c':
             self.COL = posConst
             for i in range(self.inicio,posFinal+1):
@@ -28,16 +25,17 @@ class Variable:
     def getPosicion(self, posicion):
         if posicion == 'inicio':      
             if self.tipo == 'c':
-                return self.COL, self.inicio
+                return self.inicio, self.COL
             else:
                 return self.FILA, self.inicio
         elif posicion == 'final':
             if self.tipo == 'c':
-                return self.COL, self.inicio
+                return (self.inicio+self.tam-1),self.COL
             else:
-                return self.FILA, self.inicio
+                return self.FILA, (self.inicio+self.tam-1)
         else:
             print(f'Error: {posicion} no es correcto')
+            return -1
     def getLista(self):
         return self.palabra
     
