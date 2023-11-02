@@ -121,9 +121,11 @@ def creaRestricciones(variables,factibles,podados):
 
     
 def dominios(variables,almacen):
+    #En ambas listas las posiciones corresponden a la posición variable en la lista "variables"
     podados = []
     factibles = []
     print(len(variables))
+    imprimeAlmacen(almacen)
     for i, var in enumerate(variables):
         domAlmacen=copy(almacen[busca(almacen,var.getTam())])
         #print(f'domAlmacen: {domAlmacen.getLista()}')
@@ -143,22 +145,21 @@ def dominios(variables,almacen):
             for j in range(len(listaCarVar)):
                 if listaCarVar[j] in listaCarPal:
                     contaCar+=1
+                    print(f'los caracteres {listaCarVar} estan en {listaCarPal}')
               
             if contaCar == len(listaCarVar):
-              
-                if listaCarPal == listaCarVar:
-                    domFact.addPal(pal)
+                domFact.addPal(pal)
             else:
                 domPod.addPal(pal)
         factibles.insert(i,domFact)
         podados.insert(i,domPod)
     k = 0
     for i in factibles:
-        #print(f'{k} Dominio factible :{i.getLista()}')
+        print(f'{k} Dominio factible :{i.getLista()}')
         k+=1
     k = 0
     for j in podados:
-        #print(f'{k} Dominio podado :{j.getLista()}')
+        print(f'{k} Dominio podado :{j.getLista()}')
         k+=1
     return factibles, podados
             
