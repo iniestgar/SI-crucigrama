@@ -110,10 +110,15 @@ def imprimeAlmacen(almacen):
 def creaRestricciones(variables,factibles,podados):
     restricciones = []
     varFilas = [var for var in variables if var.getTipo() == 'f']
-    varCols = [var for var in variables if var.getTipo() == 'c']
-    #for varFila in varFilas:
-     #   for varCol in varCols:
-      #      if varCol.getPosicion()[0] <= varFila.getPosicion()[0]+varFila.getTam()-1 and varFila.getPosicion()[] varCol.getPosicion()[1]: 
+    #varCols = [var for var in variables if var.getTipo() == 'c']
+    for varFila in varFilas:
+        #Variables columna que coinciden con la fila
+        for pos,var in enumerate(variables):
+            #Mientras sea columna y la fila de la variable fila tenga a la variable columna entre sus valores
+            if var.getTipo() == 'c' and var.getPosicion('inicio')[0]<= varFila.getPosicion('inicio')[0] <= var.getPosicion('final')[0] and varFila.getPosicion('inicio')[1] <= var.getPosicion('inicio')[1] <= varFila.getPosicion('final')[1]:
+                print(f'Variable {pos}: {var}')
+                
+            
         
 #########################################################################
 # Crear variables

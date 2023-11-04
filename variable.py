@@ -25,14 +25,14 @@ class Variable:
     def getPosicion(self, posicion):
         if posicion == 'inicio':      
             if self.tipo == 'c':
-                return self.inicio, self.COL
+                return (self.inicio, self.COL)
             else:
                 return self.FILA, self.inicio
         elif posicion == 'final':
             if self.tipo == 'c':
-                return (self.inicio+self.tam-1),self.COL
+                return ((self.inicio+self.tam-1),self.COL)
             else:
-                return self.FILA, (self.inicio+self.tam-1)
+                return (self.FILA, (self.inicio+self.tam-1))
         else:
             print(f'Error: {posicion} no es correcto')
             return -1
