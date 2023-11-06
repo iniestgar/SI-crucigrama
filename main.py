@@ -108,6 +108,16 @@ def imprimeAlmacen(almacen):
 # Crear restricciones
 #########################################################################      
 def creaRestricciones(variables,factibles,podados):
+    print('Factibles')
+    k = 0
+    for dom in factibles:
+        print(f'{k} {dom.getLista()}')
+        k+=1
+    k = 0
+    for dom in podados:
+        print(f'{k} {dom.getLista()}')
+        k+=1
+    
     restricciones = []
     varFilas = [var for var in variables if var.getTipo() == 'f']
     #varCols = [var for var in variables if var.getTipo() == 'c']
@@ -119,9 +129,9 @@ def creaRestricciones(variables,factibles,podados):
                 print(f'Variable {pos}: {var}')
                 #En la posicion de la columna donde coinciden 
                 if varFila.getLista()[var.getPosicion('inicio')[1]] == VACIA:
-                
+                    
                 elif varFila.getLista()[var.getPosicion('inicio')[1]].isalpha() == True:
-                
+                    
                 else:
                     
                     
@@ -158,7 +168,7 @@ def dominios(variables,almacen):
             for j in range(len(listaCarVar)):
                 if listaCarVar[j] in listaCarPal:
                     contaCar+=1
-                    print(f'los caracteres {listaCarVar} estan en {listaCarPal}')
+                    #print(f'los caracteres {listaCarVar} estan en {listaCarPal}')
               
             if contaCar == len(listaCarVar):
                 domFact.addPal(pal)
@@ -166,14 +176,14 @@ def dominios(variables,almacen):
                 domPod.addPal(pal)
         factibles.insert(i,domFact)
         podados.insert(i,domPod)
-    k = 0
-    for i in factibles:
-        print(f'{k} Dominio factible :{i.getLista()}')
-        k+=1
-    k = 0
-    for j in podados:
-        print(f'{k} Dominio podado :{j.getLista()}')
-        k+=1
+    #k = 0
+    #for i in factibles:
+     #   print(f'{k} Dominio factible :{i.getLista()}')
+     #   k+=1
+    #k = 0
+    #for j in podados:
+     #   print(f'{k} Dominio podado :{j.getLista()}')
+     #   k+=1
     return factibles, podados
             
 def creaVariables(tablero):
