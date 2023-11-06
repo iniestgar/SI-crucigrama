@@ -117,6 +117,14 @@ def creaRestricciones(variables,factibles,podados):
             #Mientras sea columna y la fila de la variable fila tenga a la variable columna entre sus valores
             if var.getTipo() == 'c' and var.getPosicion('inicio')[0]<= varFila.getPosicion('inicio')[0] <= var.getPosicion('final')[0] and varFila.getPosicion('inicio')[1] <= var.getPosicion('inicio')[1] <= varFila.getPosicion('final')[1]:
                 print(f'Variable {pos}: {var}')
+                #En la posicion de la columna donde coinciden 
+                if varFila.getLista()[var.getPosicion('inicio')[1]] == VACIA:
+                
+                elif varFila.getLista()[var.getPosicion('inicio')[1]].isalpha() == True:
+                
+                else:
+                    
+                    
                 
             
         
