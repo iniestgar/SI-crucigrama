@@ -106,9 +106,57 @@ def imprimeAlmacen(almacen):
         
 #########################################################################
 # Crear restricciones
-#########################################################################      
+#########################################################################
+
+
+def restriccionCasillaVacia(factibles,podados,posCruzada,posFila,posCol):
+    domFactInf = factibles[posCol]
+    domFactSup = factibles[posFila]
+    
+    for i in range(2):
+        for posPalSup,palFactSup in enumerate(domFactSup.getLista()):
+            palPodar = palFactSup
+            encontrado = False
+            
+            for posPalInf,palFactInf in enumerate(domFactInf.getLista()):
+                if palFactSup[posCruzada] == palFactInf[posCruzada] and i == 0:
+                    encontrado = True
+            #Si no ha encontrado una palabra con la misma letra en posCruzada
+            #se quita en la variable posFila/posCol la palabra de factibles
+            #y se añade al apartado podados
+            if encontrado  == False:
+                if i == 0:
+                    factibles[posFila].getLista().remove(palPodar)
+                    podados[posFila].addPal(palPodar)
+                elif i == 1:
+                    factibles[posCol].getLista().remove(palPodar)
+                    podados[posCol].addPal(palPodar)
+        if i == 0:
+            #Ahora se comprobarán que palabras de la variable columna se quitan
+            domFactSup = factibles[posCol]
+            domFactInf = factibles[posFila]
+
 def creaRestricciones(variables,factibles,podados):
     print('Factibles')
+
+    restricciones = []
+    varFilas = [var for var in variables if var.getTipo() == 'f']
+    #varCols = [var for var in variables if var.getTipo() == 'c']
+    for posFila,varFila in enumerate(varFilas):
+        #Variables columna que coinciden con la fila
+        for posCol,var in enumerate(variables):
+            #Mientras sea columna y la fila de la variable fila tenga a la variable columna entre sus valores
+            if var.getTipo() == 'c' and var.getPosicion('inicio')[0]<= varFila.getPosicion('inicio')[0] <= var.getPosicion('final')[0] and varFila.getPosicion('inicio')[1] <= var.getPosicion('inicio')[1] <= varFila.getPosicion('final')[1]:
+                
+                #En la posicion de la columna donde coinciden
+                posCruzada = var.getPosicion('inicio')[1]
+                if varFila.getLista()[posCruzada-varFila.getPosicion('inicio')[1]] == VACIA:
+                    restriccionCasillaVacia(factibles,podados,posCruzada,posFila,posCol)
+                    
+                #elif varFila.getLista()[posCruzada].isalpha() == True:
+                    
+                #else:
+                    
     k = 0
     for dom in factibles:
         print(f'{k} {dom.getLista()}')
@@ -116,25 +164,7 @@ def creaRestricciones(variables,factibles,podados):
     k = 0
     for dom in podados:
         print(f'{k} {dom.getLista()}')
-        k+=1
-    
-    restricciones = []
-    varFilas = [var for var in variables if var.getTipo() == 'f']
-    #varCols = [var for var in variables if var.getTipo() == 'c']
-    for varFila in varFilas:
-        #Variables columna que coinciden con la fila
-        for pos,var in enumerate(variables):
-            #Mientras sea columna y la fila de la variable fila tenga a la variable columna entre sus valores
-            if var.getTipo() == 'c' and var.getPosicion('inicio')[0]<= varFila.getPosicion('inicio')[0] <= var.getPosicion('final')[0] and varFila.getPosicion('inicio')[1] <= var.getPosicion('inicio')[1] <= varFila.getPosicion('final')[1]:
-                print(f'Variable {pos}: {var}')
-                #En la posicion de la columna donde coinciden 
-                if varFila.getLista()[var.getPosicion('inicio')[1]] == VACIA:
-                    
-                elif varFila.getLista()[var.getPosicion('inicio')[1]].isalpha() == True:
-                    
-                else:
-                    
-                    
+        k+=1               
                 
             
         
