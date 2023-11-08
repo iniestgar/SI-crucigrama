@@ -109,17 +109,23 @@ def imprimeAlmacen(almacen):
 #########################################################################
 
 
-def restriccionCasillaVacia(factibles,podados,posCruzada,posFila,posCol):
+def restriccionCasillaVacia(factibles,podados,posCruzadaFil,posCruzadaCol,posFila,posCol):
     domFactInf = factibles[posCol]
     domFactSup = factibles[posFila]
+    posCruzadaSup = posCruzadaFil
+    posCruzadaInf = posCruzadaCol
+    print(f'posCruzadaSup: {posCruzadaSup}')
+    print(f'posCruzadaInf: {posCruzadaInf}')
     
     for i in range(2):
         for posPalSup,palFactSup in enumerate(domFactSup.getLista()):
             palPodar = palFactSup
             encontrado = False
+            print(f'---posPalSup: {posPalSup}    palFactSup: {posPalSup}')
             
             for posPalInf,palFactInf in enumerate(domFactInf.getLista()):
-                if palFactSup[posCruzada] == palFactInf[posCruzada] and i == 0:
+                print(f'posPalInf: {posPalInf}   palFactInf: {posPalInf}')                
+                if palFactSup[posCruzadaSup] == palFactInf[posCruzadaInf] and i == 0:
                     encontrado = True
             #Si no ha encontrado una palabra con la misma letra en posCruzada
             #se quita en la variable posFila/posCol la palabra de factibles
@@ -135,6 +141,11 @@ def restriccionCasillaVacia(factibles,podados,posCruzada,posFila,posCol):
             #Ahora se comprobarán que palabras de la variable columna se quitan
             domFactSup = factibles[posCol]
             domFactInf = factibles[posFila]
+            posCruzadaSup = posCruzadaCol
+            posCruzadaInf = posCruzadaFil
+            print('--------Intercambio de dominios y posCruzadas-------')
+            print(f'posCruzadaSup: {posCruzadaSup}')
+            print(f'posCruzadaInf: {posCruzadaInf}')
 
 def creaRestricciones(variables,factibles,podados):
     print('Factibles')
@@ -149,9 +160,11 @@ def creaRestricciones(variables,factibles,podados):
             if var.getTipo() == 'c' and var.getPosicion('inicio')[0]<= varFila.getPosicion('inicio')[0] <= var.getPosicion('final')[0] and varFila.getPosicion('inicio')[1] <= var.getPosicion('inicio')[1] <= varFila.getPosicion('final')[1]:
                 
                 #En la posicion de la columna donde coinciden
-                posCruzada = var.getPosicion('inicio')[1]
-                if varFila.getLista()[posCruzada-varFila.getPosicion('inicio')[1]] == VACIA:
-                    restriccionCasillaVacia(factibles,podados,posCruzada,posFila,posCol)
+                posCruzadaCol = var.getPosicion('inicio')[1]
+                posCruzadaFil = posCruzadaCol-varFila.getPosicion('inicio')[1]
+                if varFila.getLista()[posCruzadaFil] == VACIA:
+                    
+                    restriccionCasillaVacia(factibles,podados,posCruzadaFil,posCruzadaCol,posCol,posFila)
                     
                 #elif varFila.getLista()[posCruzada].isalpha() == True:
                     
@@ -178,7 +191,7 @@ def dominios(variables,almacen):
     podados = []
     factibles = []
     print(len(variables))
-    imprimeAlmacen(almacen)
+    #imprimeAlmacen(almacen)
     for i, var in enumerate(variables):
         domAlmacen=copy(almacen[busca(almacen,var.getTam())])
         #print(f'domAlmacen: {domAlmacen.getLista()}')
