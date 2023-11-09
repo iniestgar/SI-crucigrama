@@ -258,7 +258,7 @@ def creaVariables(tablero):
                     if esFil==True:
                         #print(f'tamaño: {tam}')
                         posFija=fila
-                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA:
+                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA and tam > 1:
                             posFinal=col
                             variable = Variable(tablero,posFinal,posFija,"f",tam)
                             variables.append(variable)
@@ -267,7 +267,7 @@ def creaVariables(tablero):
                     if esCol==True:
                         #print(f'tamaño: {tam}')
                         posFija=col
-                        if j == iterInf-1 or tablero.getCelda(fila+1,col) == LLENA:
+                        if j == iterInf-1 or tablero.getCelda(fila+1,col) == LLENA and tam > 1:
                             posFinal=fila
                             variable = Variable(tablero,posFinal,posFija,"c",tam)
                             variables.append(variable)
