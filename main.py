@@ -108,7 +108,7 @@ def imprimeAlmacen(almacen):
 # Crear restricciones
 #########################################################################
 
-
+"""
 def restriccionCasillaVacia(factibles,podados,posCruzadaFil,posCruzadaCol,posCol,posFila):
     domFactInf = factibles[posCol]
     domFactSup = factibles[posFila]
@@ -146,11 +146,32 @@ def restriccionCasillaVacia(factibles,podados,posCruzadaFil,posCruzadaCol,posCol
             print('\n --------Intercambio de dominios y posCruzadas-------')
             print(f'posCruzadaSup: {posCruzadaSup}')
             print(f'posCruzadaInf: {posCruzadaInf}')
+"""
 
 def creaRestricciones(variables,factibles,podados):
-    print('Factibles')
+    varFilas = [var for var in variables if var.getTipo() == 'f']
+    varCols = [var for var in variables if var.getTipo() == 'c']
+    for posFila,fila in enumerate(varFilas):
+        for posCol,col in enumerate(varCols): #Sumar siempre a posCol len(varFilas)
+            if col.getPosicion('inicio')[0]<= fila.getPosicion('inicio')[0] <= col.getPosicion('final')[0] and fila.getPosicion('inicio')[1] <= col.getPosicion('inicio')[1] <= fila.getPosicion('final')[1]:
+                posCruzadaFila = col.getPosicion('inicio')[1]
+                posCruzadaCol = fila.getPosicion('inicio')[0]
+                
+                if col.getLista()[posCruzadaCol] == VACIA:
+                    for valor in factibles[posFila]:
+                        if 
+                else col.getLista()[posCruzadaCol] != VACIA:
+                    
 
-    restricciones = []
+
+def estaRestringido(a,b,domFactibles,domPodados):
+    
+    restricciones = creaRestricciones(factibles)
+    
+    
+
+#def AC3():
+"""
     varFilas = [var for var in variables if var.getTipo() == 'f']
     #varCols = [var for var in variables if var.getTipo() == 'c']
     for posFila,varFila in enumerate(varFilas):
@@ -181,7 +202,9 @@ def creaRestricciones(variables,factibles,podados):
     k = 0
     for dom in podados:
         print(f'{k} {dom.getLista()}')
-        k+=1               
+        k+=1
+        
+"""               
                 
             
         
@@ -258,7 +281,7 @@ def creaVariables(tablero):
                     if esFil==True:
                         #print(f'tamaño: {tam}')
                         posFija=fila
-                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA and tam > 1:
+                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA:
                             posFinal=col
                             variable = Variable(tablero,posFinal,posFija,"f",tam)
                             variables.append(variable)
@@ -267,10 +290,11 @@ def creaVariables(tablero):
                     if esCol==True:
                         #print(f'tamaño: {tam}')
                         posFija=col
-                        if j == iterInf-1 or tablero.getCelda(fila+1,col) == LLENA and tam > 1:
-                            posFinal=fila
-                            variable = Variable(tablero,posFinal,posFija,"c",tam)
-                            variables.append(variable)
+                        if j == iterInf-1 or tablero.getCelda(fila+1,col) == LLENA:
+                            if tam > 1:
+                                posFinal=fila
+                                variable = Variable(tablero,posFinal,posFija,"c",tam)
+                                variables.append(variable)
                             tam = 0
 
         #Si al crear las variables filas llegamos al final 
@@ -292,11 +316,18 @@ def creaVariables(tablero):
 #def restaura(posVar, var):
     
 
-def forward(var,posVar,palabra,tamListVar,factibles,podados):
+def forward(var,i,a,tamListVar,factibles,podados):
     for j in range(posVar+1,tamListVar):
         vacio = True
-        #for b in factibles[j]:
-            #if (a,b) in restricciones
+        for b in factibles[j]:
+            if estaRestringido(a,b,factibles[j],podados[j]):
+                vacio = False
+            else:
+                podados[j].addPal(b)
+                factible[j].getLista().remove(b)
+        if vacio == True:
+            return False
+    return True
 
 def FC(i,variables,factibles,podados):
     
@@ -308,7 +339,8 @@ def FC(i,variables,factibles,podados):
             if forward(variables[i],i,a,len(variables),factibles,podados):
                 if FC(i+1,variables,factibles,podados):
                     return True
-            #restaura(i,variables[i])
+            #restaura(i,variables[i],factibles,podados)
+    return False
         
 #########################################################################  
 # Principal
