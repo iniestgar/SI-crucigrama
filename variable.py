@@ -22,7 +22,13 @@ class Variable:
     def getTam(self):
         return self.tam
     
+    
     def getPosicion(self, posicion):
+        """
+        Recibe como parámetro si queremos la posición final o inicial
+        y devuelve un par (fila,columna) que depende de si es columna o fila
+        """
+         
         if posicion == 'inicio':      
             if self.tipo == 'c':
                 return (self.inicio, self.COL)

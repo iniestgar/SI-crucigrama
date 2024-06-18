@@ -217,7 +217,9 @@ def dominios(variables,almacen):
     #En ambas listas las posiciones corresponden a la posición variable en la lista "variables"
     podados = []
     factibles = []
+
     print(len(variables))
+
     imprimeAlmacen(almacen)
     for i, var in enumerate(variables):
         domAlmacen=copy(almacen[busca(almacen,var.getTam())])
@@ -225,6 +227,7 @@ def dominios(variables,almacen):
         #print(f'palagra: {var.getLista()}')
         #Guardamos la posicion y el caracter de la palabra de la primera de variables
         listaCarVar=[(pos,c) for pos,c in enumerate(var.getLista()) if c.isalpha()==True]
+        
         domFact = Dominio(var.getTam())
         domPod = Dominio(var.getTam())
         
@@ -269,19 +272,25 @@ def creaVariables(tablero):
         for i in range(iterSup):
             #print('Itera')
             tam = 0
+
             for j in range(iterInf):
                 fila=i
                 col=j
-                if esCol==True: #Intercambiamos los valores para crear las variables Columna
+
+                if esCol==True: 
+                #Intercambiamos los valores para crear las variables Columna
                     fila=j
                     col=i
+
                 #print(f'Iteración {i}: ({fila}, {col})')
                 if tablero.getCelda(fila,col) != LLENA:
                     tam+=1
+
                     if esFil==True:
                         #print(f'tamaño: {tam}')
                         posFija=fila
                         if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA:
+                            """SI llega al limite del tablero O si se encuentra una casilla negra en la siguiente columna"""
                             posFinal=col
                             variable = Variable(tablero,posFinal,posFija,"f",tam)
                             variables.append(variable)
@@ -304,7 +313,8 @@ def creaVariables(tablero):
             esFil=False
             iterSup=COLS
             iterInf=FILS
-        
+    
+    """Imprime: Tamaño de la lista variables y cada par posicion y valor de la lista"""
     print(len(variables))
     for i,var in enumerate(variables):
         print(i,var.getPosicion('inicio'),var.getPosicion('final'),var)
