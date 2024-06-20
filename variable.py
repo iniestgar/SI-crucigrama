@@ -33,7 +33,7 @@ class Variable:
             if self.tipo == 'c':
                 return (self.inicio, self.COL)
             else:
-                return self.FILA, self.inicio
+                return (self.FILA, self.inicio)
         elif posicion == 'final':
             if self.tipo == 'c':
                 return ((self.inicio+self.tam-1),self.COL)

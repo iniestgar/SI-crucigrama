@@ -148,30 +148,38 @@ def restriccionCasillaVacia(factibles,podados,posCruzadaFil,posCruzadaCol,posCol
             print(f'posCruzadaInf: {posCruzadaInf}')
 """
 
+
+
 def creaRestricciones(variables,factibles,podados):
     varFilas = [var for var in variables if var.getTipo() == 'f']
     varCols = [var for var in variables if var.getTipo() == 'c']
     for posFila,fila in enumerate(varFilas):
-        for posCol,col in enumerate(varCols): #Sumar siempre a posCol len(varFilas)
+        print(f"Variable fila {fila.getLista()}")
+
+        for posCol,col in enumerate(varCols): #Sumar siempre a posCol len(varFilas) para trabajar con el parametro 'variables'
+            print(f"\t Columna={col.getLista()}")
             if col.getPosicion('inicio')[0]<= fila.getPosicion('inicio')[0] <= col.getPosicion('final')[0] and fila.getPosicion('inicio')[1] <= col.getPosicion('inicio')[1] <= fila.getPosicion('final')[1]:
-                posCruzadaFila = col.getPosicion('inicio')[1]
-                posCruzadaCol = fila.getPosicion('inicio')[0]
+                posCruzadaCol = col.getPosicion('inicio')[1]
+                posCruzadaFila = fila.getPosicion('inicio')[0]
                 
-                if col.getLista()[posCruzadaCol] == VACIA:
-                    for valor in factibles[posFila]:
-                        if 
-                else col.getLista()[posCruzadaCol] != VACIA:
+                #Tienen que ser IGUALES, sino, HAY ERROR
+                if col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]] == fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]]:
+                    print(f"Coinciden Pos={posCruzadaFila-col.getPosicion('inicio')[0]} Valor={col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]]} = Pos={posCruzadaCol-fila.getPosicion('inicio')[1]} Valor={fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]]}")
+                
+                #if col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]] == VACIA and fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]] == VACIA:
                     
 
 
+
+"""
 def estaRestringido(a,b,domFactibles,domPodados):
     
     restricciones = creaRestricciones(factibles)
-    
-    
-
-#def AC3():
 """
+    
+"""
+def AC3():
+
     varFilas = [var for var in variables if var.getTipo() == 'f']
     #varCols = [var for var in variables if var.getTipo() == 'c']
     for posFila,varFila in enumerate(varFilas):
@@ -215,10 +223,13 @@ def estaRestringido(a,b,domFactibles,domPodados):
     
 def dominios(variables,almacen):
     #En ambas listas las posiciones corresponden a la posición variable en la lista "variables"
-    podados = []
-    factibles = []
+    """
+        Cada dominio de palabras en la posicion i de podados y factibles tienen el mismo tamaño de palabra 
+    """
+    podados = [] #Valores que no pueden entrar en la variable porque el contenido limita las opciones
+    factibles = [] #Valores que se ajustan a los caracteres que hay en el tablero
 
-    print(len(variables))
+    print(str(len(variables)) + "\n Almacen:")
 
     imprimeAlmacen(almacen)
     for i, var in enumerate(variables):
@@ -232,12 +243,12 @@ def dominios(variables,almacen):
         domPod = Dominio(var.getTam())
         
         for pal in domAlmacen.getLista():
-            #Guardamos la posicion y el caracter de la palabra del almacen en listaCarPal
+            #Guardamos la POSICION y el CARACTER de la palabra del almacen en listaCarPal
             listaCarPal = [(pos,c) for pos,c in enumerate(pal)]
             contaCar = 0
             #print(f'Lista de caracteres de la palabra del dominio: {listaCarPal}')
             #print(f'Lista de caracteres de la palabra de la variable: {listaCarVar} \n')
-            #Comparamos si se corresponden los mismo carácteres en las mismas posiciones
+            #Comparamos si se corresponden los mismo CARACTERES en las mismas POSICIONES
             for j in range(len(listaCarVar)):
                 if listaCarVar[j] in listaCarPal:
                     contaCar+=1
@@ -249,14 +260,16 @@ def dominios(variables,almacen):
                 domPod.addPal(pal)
         factibles.insert(i,domFact)
         podados.insert(i,domPod)
-    #k = 0
-    #for i in factibles:
-     #   print(f'{k} Dominio factible :{i.getLista()}')
-     #   k+=1
-    #k = 0
-    #for j in podados:
-     #   print(f'{k} Dominio podado :{j.getLista()}')
-     #   k+=1
+    """
+    k = 0
+    for i in factibles:
+        print(f'{k} Dominio factible :{i.getLista()}')
+        k+=1
+    k = 0
+    for j in podados:
+       print(f'{k} Dominio podado :{j.getLista()}')
+       k+=1
+    """
     return factibles, podados
             
 def creaVariables(tablero):
