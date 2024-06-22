@@ -149,26 +149,58 @@ def restriccionCasillaVacia(factibles,podados,posCruzadaFil,posCruzadaCol,posCol
 """
 
 
+def domInterseccion(varFila,varCol,posInterseccionFila,posInterseccionColumna,domFactibleFila,domFactibleCol):
+    palabrasDevol = []
+    #print(f"Dominio factible filas: {domFactibleFila.getLista()} \nDominio factible columnas: {domFactibleCol.getLista()}")
+
+    for palDomFila in domFactibleFila.getLista():
+
+        for palDomCol in domFactibleCol.getLista():
+            """
+            Se comprueban todas las palabras posibles de tal forma que coincidan en 
+            y al final se añaden en tupla(palabraFila,palabraColumna)
+            """
+            if palDomFila[posInterseccionFila] == palDomCol[posInterseccionColumna]:
+                palabrasDevol.append((palDomFila,palDomCol))
+
+    #print(f"\t\t Restriccion de Fila({varFila.getPosicion('inicio')}):{varFila} con Columna({varCol.getPosicion('inicio')}):{varCol} \n\t\t\tTuplas añadidas: {palabrasDevol}")
+    return palabrasDevol
+
 
 def creaRestricciones(variables,factibles,podados):
     varFilas = [var for var in variables if var.getTipo() == 'f']
     varCols = [var for var in variables if var.getTipo() == 'c']
+    #print(f"N filas: {len(varFilas)} N columnas: {len(varCols)}")
+    restricciones = [[[] for j in range(len(varCols))] for i in range(len(varFilas))]
+    #print(f"Tamaño: {len(restricciones)} \nContenido:{restricciones}")
+
+    
+
     for posFila,fila in enumerate(varFilas):
-        print(f"Variable fila {fila.getLista()}")
+        print(f"---------------------\nVariable fila {fila.getLista()}")
 
         for posCol,col in enumerate(varCols): #Sumar siempre a posCol len(varFilas) para trabajar con el parametro 'variables'
             print(f"\t Columna={col.getLista()}")
+
+            #Si existe interseccion añadir dominio a 'restricciones', SINO, añadir dominio vacio
             if col.getPosicion('inicio')[0]<= fila.getPosicion('inicio')[0] <= col.getPosicion('final')[0] and fila.getPosicion('inicio')[1] <= col.getPosicion('inicio')[1] <= fila.getPosicion('final')[1]:
                 posCruzadaCol = col.getPosicion('inicio')[1]
                 posCruzadaFila = fila.getPosicion('inicio')[0]
                 
-                #Tienen que ser IGUALES, sino, HAY ERROR
+                """#Tienen que ser IGUALES, sino, HAY ERROR ##¡¡¡¡FUNCIONA!!!!
                 if col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]] == fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]]:
                     print(f"Coinciden Pos={posCruzadaFila-col.getPosicion('inicio')[0]} Valor={col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]]} = Pos={posCruzadaCol-fila.getPosicion('inicio')[1]} Valor={fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]]}")
-                
-                #if col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]] == VACIA and fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]] == VACIA:
-                    
+                """
+                """if col.getLista()[posCruzadaFila-col.getPosicion('inicio')[0]] == VACIA and fila.getLista()[posCruzadaCol-fila.getPosicion('inicio')[1]] == VACIA:"""
 
+                posInterseccionColumna = posCruzadaFila-col.getPosicion('inicio')[0]
+                posInterseccionFila = posCruzadaCol-fila.getPosicion('inicio')[1]
+                restricciones[posFila][posCol].extend(domInterseccion(fila,col,posInterseccionFila,posInterseccionColumna,factibles[posFila],factibles[posCol+len(varFilas)]))
+            else:
+                restricciones[posFila][posCol].extend([])
+    for i in range(len(varFilas)):
+        for j in range(len(varCols)):
+            print(f"Fila:{i}, Columna:{j} Variable Posicion Fila:{varFilas[i]} , Columna:{varCols[j]}  {restricciones[i][j]}")
 
 
 """
@@ -302,7 +334,7 @@ def creaVariables(tablero):
                     if esFil==True:
                         #print(f'tamaño: {tam}')
                         posFija=fila
-                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA:
+                        if j == iterInf-1 or tablero.getCelda(fila,col+1) == LLENA :
                             """SI llega al limite del tablero O si se encuentra una casilla negra en la siguiente columna"""
                             posFinal=col
                             variable = Variable(tablero,posFinal,posFija,"f",tam)
@@ -313,7 +345,7 @@ def creaVariables(tablero):
                         #print(f'tamaño: {tam}')
                         posFija=col
                         if j == iterInf-1 or tablero.getCelda(fila+1,col) == LLENA:
-                            if tam > 1:
+                            if tam > 0:
                                 posFinal=fila
                                 variable = Variable(tablero,posFinal,posFija,"c",tam)
                                 variables.append(variable)
