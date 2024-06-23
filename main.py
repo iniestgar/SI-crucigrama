@@ -198,9 +198,11 @@ def creaRestricciones(variables,factibles,podados):
                 restricciones[posFila][posCol].extend(domInterseccion(fila,col,posInterseccionFila,posInterseccionColumna,factibles[posFila],factibles[posCol+len(varFilas)]))
             else:
                 restricciones[posFila][posCol].extend([])
+    """
     for i in range(len(varFilas)):
         for j in range(len(varCols)):
-            print(f"Fila:{i}, Columna:{j} Variable Posicion Fila:{varFilas[i]} , Columna:{varCols[j]}  {restricciones[i][j]}")
+            print(f"Fila:{i}, Columna:{j} Variable Fila:{varFilas[i]} , Columna:{varCols[j]}  {restricciones[i][j]}\n")
+    """
 
 
 """
@@ -372,20 +374,23 @@ def creaVariables(tablero):
     
 
 def forward(var,i,a,tamListVar,factibles,podados):
-    for j in range(posVar+1,tamListVar):
+    for j in range(i,tamListVar):
         vacio = True
-        for b in factibles[j]:
+        for b in factibles[j].getLista():
             if estaRestringido(a,b,factibles[j],podados[j]):
                 vacio = False
             else:
                 podados[j].addPal(b)
-                factible[j].getLista().remove(b)
+                factibles[j].getLista().remove(b)
         if vacio == True:
             return False
     return True
 
-def FC(i,variables,factibles,podados):
+def FC(i,restricciones,variables,factibles,podados):
     
+    lista = [j for j in range(len(list(variables))) if variables[j].getTipo() == 'c']
+    inicioVariablesCol = lista[0]
+    print(f"Inicio variables columna:{inicioVariablesCol}")
     for a in factibles[i].getLista():
         variables[i].setPalabra(a)
         if i == len(variables):
@@ -437,11 +442,11 @@ def main():
                 pos=pygame.mouse.get_pos()                
                 if pulsaBotonFC(pos, anchoVentana, altoVentana):
                     print("FC")
-                    variables = creaVariables(tablero)
+                    variables = list(creaVariables(tablero))
                     factibles, podados = dominios(variables,almacen)
                     restricciones = creaRestricciones(variables,factibles,podados)
-                    FC(0,variables,factibles,podados)
-                    res=False #aquí llamar al forward checking
+                    
+                    res=FC(0,restricciones,variables,factibles,podados) #aquí llamar al forward checking
                     if res==False:
                         MessageBox.showwarning("Alerta", "No hay solución")                                  
                 elif pulsaBotonAC3(pos, anchoVentana, altoVentana):                    
