@@ -2,6 +2,7 @@
 class Variable:
     def __init__(self,tablero,posFinal,posConst,tipo,tamPal):
         self.palabra = []
+        self.palabraAnterior = []
         self.tam = tamPal
         self.tipo = tipo
         self.inicio = posFinal-tamPal+1
@@ -46,6 +47,7 @@ class Variable:
         return self.palabra
     
     def setPalabra(self,pal):
+        self.palabraAnterior = self.palabra
         self.palabra = list(pal)
         
     def getTipo(self):

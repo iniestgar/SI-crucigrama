@@ -177,10 +177,10 @@ def creaRestricciones(variables,factibles,podados):
     
 
     for posFila,fila in enumerate(varFilas):
-        print(f"---------------------\nVariable fila {fila.getLista()}")
+        #print(f"---------------------\nVariable fila {fila.getLista()}")
 
         for posCol,col in enumerate(varCols): #Sumar siempre a posCol len(varFilas) para trabajar con el parametro 'variables'
-            print(f"\t Columna={col.getLista()}")
+            #print(f"\t Columna={col.getLista()}")
 
             #Si existe interseccion añadir dominio a 'restricciones', SINO, añadir dominio vacio
             if col.getPosicion('inicio')[0]<= fila.getPosicion('inicio')[0] <= col.getPosicion('final')[0] and fila.getPosicion('inicio')[1] <= col.getPosicion('inicio')[1] <= fila.getPosicion('final')[1]:
@@ -198,18 +198,14 @@ def creaRestricciones(variables,factibles,podados):
                 restricciones[posFila][posCol].extend(domInterseccion(fila,col,posInterseccionFila,posInterseccionColumna,factibles[posFila],factibles[posCol+len(varFilas)]))
             else:
                 restricciones[posFila][posCol].extend([])
-    """
-    for i in range(len(varFilas)):
-        for j in range(len(varCols)):
-            print(f"Fila:{i}, Columna:{j} Variable Fila:{varFilas[i]} , Columna:{varCols[j]}  {restricciones[i][j]}\n")
-    """
-
-
-"""
-def estaRestringido(a,b,domFactibles,domPodados):
     
-    restricciones = creaRestricciones(factibles)
-"""
+    
+    return restricciones
+
+
+
+
+
     
 """
 def AC3():
@@ -294,16 +290,16 @@ def dominios(variables,almacen):
                 domPod.addPal(pal)
         factibles.insert(i,domFact)
         podados.insert(i,domPod)
-    """
+    
     k = 0
-    for i in factibles:
-        print(f'{k} Dominio factible :{i.getLista()}')
+    for o in factibles:
+        print(f'{k} Dominio factible :{o.getLista()}')
         k+=1
     k = 0
-    for j in podados:
-       print(f'{k} Dominio podado :{j.getLista()}')
-       k+=1
-    """
+    for l in podados:
+        print(f'{k} Dominio podado :{l.getLista()}')
+        k+=1
+                
     return factibles, podados
             
 def creaVariables(tablero):
@@ -370,37 +366,74 @@ def creaVariables(tablero):
 #########################################################################
 # ForwardChecking
 #########################################################################
-#def restaura(posVar, var):
-    
+def restaura(factibles,podados,factiblesAnteriores,podadosAnteriores):
+    factibles = factiblesAnteriores
+    podados = podadosAnteriores
 
-def forward(var,i,a,tamListVar,factibles,podados):
-    for j in range(i,tamListVar):
+
+
+def estaRestringido(a,b,restricciones,i,j):
+    """"Se busca si hay restriccion entre la variable fila numero 'i' 
+        y la variable columna numero 'j'"""
+    j-=len(restricciones)
+    tupla=(a,b)
+    restriccion = restricciones[i][j]
+    print(f"Esta restringido?¿?¿\nPosicion variable Columna:{j}   Tupla:{tupla}  Lista de restricciones{restriccion}")
+    print("Salida de funcion estaRestringido")
+    if tupla in restriccion:
+        return True
+    return False
+
+
+def forward(i,a,tamListVar,factibles,podados,inicioVariablesCol,restricciones):
+    
+    print(f"------Metodo FORWARD--------")
+    for j in range(inicioVariablesCol,tamListVar):
         vacio = True
+        print(f"\t Posicion de la variable(j):{j} y DominioFactible:{factibles[j].getLista()}")
         for b in factibles[j].getLista():
-            if estaRestringido(a,b,factibles[j],podados[j]):
+            print(f"Valor de factibles[{j}]:{b}")
+            if estaRestringido(a,b,restricciones,i,j):
                 vacio = False
+                print(f"esta restringido {a} y {b} en variable fila {i} y columna {j} \n-----------------------------")    
             else:
                 podados[j].addPal(b)
                 factibles[j].getLista().remove(b)
-        if vacio == True:
+                """
+                k = 0
+                for o in factibles:
+                    print(f'{k} Dominio factible :{o.getLista()}')
+                    k+=1
+                k = 0
+                for l in podados:
+                    print(f'{k} Dominio podado :{l.getLista()}')
+                    k+=1
+                """
+                print("----------------------\n")
+        if vacio:
             return False
     return True
 
 def FC(i,restricciones,variables,factibles,podados):
     
-    lista = [j for j in range(len(list(variables))) if variables[j].getTipo() == 'c']
+    lista = [j for j in range(len(variables)) if variables[j].getTipo() == 'c']
     inicioVariablesCol = lista[0]
-    print(f"Inicio variables columna:{inicioVariablesCol}")
-    for a in factibles[i].getLista():
-        variables[i].setPalabra(a)
-        if i == len(variables):
+    print(f"\n\n-------\nInicio variables columna:{inicioVariablesCol}")
+    if i == len(variables):
             return True
-        else:
-            if forward(variables[i],i,a,len(variables),factibles,podados):
-                if FC(i+1,variables,factibles,podados):
+    else:
+        for a in factibles[i].getLista():
+            #variables[i].setPalabra(a)
+            print(f"Palabra de variable{i}:{a}")
+            
+            factiblesAnteriores = factibles
+            podadosAnteriores = podados
+            if forward(i,a,len(variables),factibles,podados,inicioVariablesCol,restricciones):
+                
+                if FC(i+1,restricciones,variables,factibles,podados):
                     return True
-            #restaura(i,variables[i],factibles,podados)
-    return False
+            restaura(factibles,podados,factiblesAnteriores,podadosAnteriores)
+        return False
         
 #########################################################################  
 # Principal
@@ -445,7 +478,9 @@ def main():
                     variables = list(creaVariables(tablero))
                     factibles, podados = dominios(variables,almacen)
                     restricciones = creaRestricciones(variables,factibles,podados)
-                    
+                    for i in range(len(restricciones)):
+                        for j in range(len(restricciones[i])):
+                            print(f"Fila:{i}, Columna:{j}   Restrccion{restricciones[i][j]}\n")
                     res=FC(0,restricciones,variables,factibles,podados) #aquí llamar al forward checking
                     if res==False:
                         MessageBox.showwarning("Alerta", "No hay solución")                                  
