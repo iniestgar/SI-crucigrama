@@ -49,7 +49,8 @@ class Variable:
     def setPalabra(self,pal):
         self.palabraAnterior = self.palabra
         self.palabra = list(pal)
-        
+    def setAnterior(self):
+        self.palabra = self.palabraAnterior
     def getTipo(self):
         return self.tipo
     
